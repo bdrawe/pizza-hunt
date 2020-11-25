@@ -1,4 +1,4 @@
-const Pizza = require('../models');
+const { Pizza } = require('../models');
 
 const pizzaController = {
     //get all Pizza
@@ -26,6 +26,35 @@ const pizzaController = {
             res.status(400).json(err);
         })
     },
+    createPizza({ body }, res) {
+        Pizza.create(body)
+        .then(dbPizzaData => res.json(dbPizzaData))
+        .catch(err => res.status(400).json(err));
+    },
+    updatePizza({ params, body }, res){
+                                                        //returning a new version of doc.
+        Pizza.findOneAndUpdate({ _id: params.id}, body, { new: true})
+            .then(dbPizzaData => {
+                if(!dbPizzaData) {
+                    res.status(404).json({message: 'No pizza found with this id'});
+                    return;
+                }
+                res.json(dbPizzaData);
+            })
+            .catch(err => res.status(400).sjon(err));
+    },
+    //delete pizza
+    deletePizza({ params}, res) {
+        Pizza.findOneAndDelete({_id: params.id})
+            .then(dbPizzaData =>{
+                if(!dbPizzaData){
+                    res.status(404).json({message: 'No pizza found with this id'});
+                    return
+                }
+                res.json(dbPizzaData);
+            })
+            .catch(err => res.status(400).json(err));
+    }
 };
 
 module.exports = pizzaController;

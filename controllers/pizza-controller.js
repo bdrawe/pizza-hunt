@@ -42,9 +42,10 @@ const pizzaController = {
         .then(dbPizzaData => res.json(dbPizzaData))
         .catch(err => res.status(400).json(err));
     },
+
     updatePizza({ params, body }, res){
                                                         //returning a new version of doc.
-        Pizza.findOneAndUpdate({ _id: params.id}, body, { new: true})
+        Pizza.findOneAndUpdate({ _id: params.id}, body, { new: true, runValidators: true})
             .then(dbPizzaData => {
                 if(!dbPizzaData) {
                     res.status(404).json({message: 'No pizza found with this id'});
